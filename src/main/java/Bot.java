@@ -15,7 +15,7 @@ public class Bot {
     /**
      * Main method of the bot.
      *
-     * @param args
+     * @param args Ignored
      */
     public static void main(String[] args) {
 
