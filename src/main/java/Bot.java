@@ -12,50 +12,34 @@ import java.util.Scanner;
 
 public class Bot {
 
+    /**
+     * Main method of the bot.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
 
-        String token = getToken();
+        String token = getTokenFromFile();
 
         GatewayDiscordClient client = createClient(token);
 
         login(client);
 
-        client.getEventDispatcher().on(MessageCreateEvent.class)
-                .map(MessageCreateEvent::getMessage)
-                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
-                .filter(message -> message.getContent().equalsIgnoreCase("!ping"))
-                .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("Pong!"))
-                .subscribe();
+        respondToPing(client);
+
+        testResponse(client);
 
         client.onDisconnect().block();
     }
 
-    //@org.jetbrains.annotations.Nullable
-    private static GatewayDiscordClient createClient(String token) {
-        GatewayDiscordClient client = DiscordClientBuilder.create(token)
-                .build()
-                .login()
-                .block();
-        return client;
-    }
-
-    private static void login(GatewayDiscordClient client) {
-        client.getEventDispatcher().on(ReadyEvent.class)
-                .subscribe(event -> {
-                    User self = event.getSelf();
-                    System.out.println(String.format("Logged in as %s#%s", self.getUsername(), self.getDiscriminator()));
-                });
-    }
-
     /**
-     * Get
+     * Read Token.txt for the discord bots token.
      *
-     * @return
+     * @return Token as a string.
      */
-    private static String getToken() {
+    private static String getTokenFromFile() {
         try {
-            File file = new File("C:\\Users\\Matt\\IdeaProjects\\NameGeneratorBot\\src\\main\\resources\\Token.txt"); //FIXME use path from resource root
+            File file = new File("C:\\Users\\Matt\\IdeaProjects\\NameGeneratorBot\\src\\main\\resources\\Token.txt");
             FileReader fileReader = new FileReader(file);
             Scanner scanner = new Scanner(fileReader);
             return scanner.next();
@@ -63,5 +47,51 @@ public class Bot {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     * Creates a client from the passed token.
+     *
+     * @param token Token
+     * @return DiscordClient
+     */
+    private static GatewayDiscordClient createClient(String token) {
+        return DiscordClientBuilder.create(token)
+                .build()
+                .login()
+                .block();
+    }
+
+    /**
+     *
+     *
+     * @param client Client
+     */
+    private static void login(GatewayDiscordClient client) {
+        client.getEventDispatcher().on(ReadyEvent.class)
+                .subscribe(event -> {
+                    User self = event.getSelf();
+                    System.out.printf("Logged in as %s#%s%n", self.getUsername(), self.getDiscriminator());
+                });
+    }
+
+    private static void respondToPing(GatewayDiscordClient client) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
+                .filter(message -> message.getContent().equalsIgnoreCase("!ping"))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage("Pong!"))
+                .subscribe();
+    }
+
+    private static void testResponse(GatewayDiscordClient client) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
+                .filter(message -> message.getContent().equalsIgnoreCase("!hello"))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage("Hello!"))
+                .subscribe();
     }
 }
