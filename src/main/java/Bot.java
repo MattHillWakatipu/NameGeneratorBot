@@ -32,7 +32,7 @@ public class Bot {
 
         sayHello(client);
 
-        testResponse(client, nameGenerator);
+        randomName(client, nameGenerator);
 
         client.onDisconnect().block();
     }
@@ -100,7 +100,7 @@ public class Bot {
                 .subscribe();
     }
 
-    private static void testResponse(GatewayDiscordClient client, NameGenerator nameGenerator) {
+    private static void randomName(GatewayDiscordClient client, NameGenerator nameGenerator) {
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
