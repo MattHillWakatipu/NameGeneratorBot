@@ -2,7 +2,10 @@ package NameGenerator;
 
 import NameGenerator.NameGenerator.Gender;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import static NameGenerator.NameGenerator.Gender.*;
 import static NameGenerator.WeightedOrigin.Origin;
@@ -64,6 +67,9 @@ public class Name {
         this.surname = selectSurname();
     }
 
+    //////////////////////////////
+    //  Name Selection Methods  //
+    //////////////////////////////
 
     /**
      * Randomly select a first name based off of current origin.
@@ -71,7 +77,15 @@ public class Name {
      * @return First name.
      */
     private String selectFirstName() {
-        return null;
+        String origin = getOrigin().toString().toLowerCase();
+        String gender = getGender().toString().toLowerCase();
+        String directoryName = capitaliseFirstChar(origin);
+
+        String filePath = "src/main/resources/NameLists/" + directoryName + "/" + origin + "_" + gender + ".txt";
+
+        //String filePath = "src/main/resources/NameLists/Scottish/scottish_feminine.txt";
+
+        return getRandomNameFromFile(filePath);
     }
 
     /**
@@ -83,10 +97,27 @@ public class Name {
         return null;
     }
 
+    private String getRandomNameFromFile(String filePath) {
+        try {
+            File file = new File(filePath);
 
-    //////////////////////
-    //  Random Methods  //
-    //////////////////////
+            Scanner scanner = new Scanner(file);
+
+            if (scanner.hasNext()) {
+                return scanner.next();
+            }
+
+        } catch (FileNotFoundException e) {
+            System.out.println(filePath + "not found");
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /////////////////////////////////
+    //  Random Generation Methods  //
+    /////////////////////////////////
 
     /**
      * Randomly select a gender based off of preselected percentages.
@@ -137,6 +168,10 @@ public class Name {
         return null;    //TODO throw exception?
     }
 
+    ///////////////
+    //  Getters  //
+    ///////////////
+
     public String getFirstName() {
         return firstName;
     }
@@ -149,6 +184,10 @@ public class Name {
         return gender;
     }
 
+    public Origin getOrigin() {
+        return origin;
+    }
+
     @Override
     public String toString() {
         return "Name{" +
@@ -157,5 +196,24 @@ public class Name {
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';
+    }
+
+    //////////////////////
+    //  Helper Methods  //
+    //////////////////////
+
+    /**
+     * Capitalise the first character of a string. Used for directory names.
+     *
+     * @param input String to capitalise.
+     * @return Capitalised String.
+     */
+    private String capitaliseFirstChar(String input) {
+
+        if (input.length() == 0) {
+            return "";
+        }
+
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 }
