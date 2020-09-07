@@ -1,38 +1,92 @@
 package NameGenerator;
 
-import NameGenerator.NameGender.Gender;
+import NameGenerator.NameGenerator.Gender;
 
 import java.util.ArrayList;
 
-import static NameGenerator.NameGender.FEMININE_PERCENTAGE;
-import static NameGenerator.NameGender.MASCULINE_PERCENTAGE;
+import static NameGenerator.NameGenerator.Gender.*;
+import static NameGenerator.WeightedOrigin.Origin;
 
 public class Name {
 
+    static final double MASCULINE_PERCENTAGE = 0.4;
+    static final double FEMININE_PERCENTAGE = 0.4;
+
+    private final Gender gender;
+    private final Origin origin;
     private final String firstName;
     private final String surname;
-    private final Gender gender;
 
-    public Name(String firstName, String surname, Gender gender) {
-        this.firstName = firstName;
-        this.surname = surname;
-        this.gender = gender;
-    }
-
-    public Name(Region region) {
-        NameOrigin origin = calculateOrigin(region);
+    /**
+     * Constructor for truly random name with no parameters selected.
+     */
+    public Name() {
         this.gender = randomGender();
-        this.firstName = selectFirstName(origin);
-        this.surname = selectSurname(origin);
+        this.origin = randomOrigin();
+        this.firstName = selectFirstName();
+        this.surname = selectSurname();
     }
 
-    private String selectSurname(NameOrigin origin) {
+    /**
+     * Constructor for random name with region parameter selected.
+     *
+     * @param region Region to use demographics of.
+     */
+    public Name(Region region) {
+        this.gender = randomGender();
+        this.origin = calculateOrigin(region);
+        this.firstName = selectFirstName();
+        this.surname = selectSurname();
+    }
+
+    /**
+     * Constructor for random name with gender parameter selected.
+     *
+     * @param gender Selected gender to get name of.
+     */
+    public Name(Gender gender) {
+        this.gender = gender;
+        this.origin = randomOrigin();
+        this.firstName = selectFirstName();
+        this.surname = selectSurname();
+    }
+
+    /**
+     * Constructor for random name with gender parameter and region parameter selected.
+     *
+     * @param gender Selected gender to get name of.
+     * @param region Region to use demographics of.
+     */
+    public Name(Gender gender, Region region) {
+        this.gender = gender;
+        this.origin = calculateOrigin(region);
+        this.firstName = selectFirstName();
+        this.surname = selectSurname();
+    }
+
+
+    /**
+     * Randomly select a first name based off of current origin.
+     *
+     * @return First name.
+     */
+    private String selectFirstName() {
         return null;
     }
 
-    private String selectFirstName(NameOrigin origin) {
+    /**
+     * Randomly select a surname based off of current origin.
+     *
+     * @return Surname.
+     */
+    private String selectSurname() {
         return null;
     }
+
+
+    //////////////////////
+    //  Random Methods  //
+    //////////////////////
 
     /**
      * Randomly select a gender based off of preselected percentages.
@@ -42,13 +96,24 @@ public class Name {
     private Gender randomGender() {
         double randomValue = Math.random();
         if (randomValue <= MASCULINE_PERCENTAGE) {
-            return Gender.MASCULINE;
+            return MASCULINE;
         }
         randomValue -= MASCULINE_PERCENTAGE;
         if (randomValue <= FEMININE_PERCENTAGE) {
-            return Gender.FEMININE;
+            return FEMININE;
         }
-        return Gender.UNISEX;
+        return UNISEX;
+    }
+
+    /**
+     * Randomly select an origin.
+     *
+     * @return Origin of name.
+     */
+    private Origin randomOrigin() {
+        int lastIndex = Origin.values().length - 1;
+        int randomNumber = (int) (Math.random() * lastIndex);
+        return Origin.values()[randomNumber];
     }
 
     /**
@@ -57,19 +122,19 @@ public class Name {
      * @param region Region to calculate the origin for.
      * @return NameOrigin to use.
      */
-    private NameOrigin calculateOrigin(Region region) {
+    private Origin calculateOrigin(Region region) {
         double randomValue = Math.random();
 
-        ArrayList<NameOrigin> demographics = region.demographics;
-        for (NameOrigin origin : demographics) {
-            if (randomValue <= origin.getWeighting()) {
-                return origin;
+        ArrayList<WeightedOrigin> demographics = region.demographics;
+        for (WeightedOrigin weightedOrigin : demographics) {
+            if (randomValue <= weightedOrigin.getWeighting()) {
+                return weightedOrigin.getOrigin();
                 //Found origin to use
             } else {
-                randomValue -= origin.getWeighting();       //remove weighting from random value and continue iterating
+                randomValue -= weightedOrigin.getWeighting();       //remove weighting from random value and continue iterating
             }
         }
-        return null;    //TODO throw exception
+        return null;    //TODO throw exception?
     }
 
     public String getFirstName() {
@@ -82,5 +147,15 @@ public class Name {
 
     public Gender getGender() {
         return gender;
+    }
+
+    @Override
+    public String toString() {
+        return "Name{" +
+                "gender=" + gender +
+                ", origin=" + origin +
+                ", firstName='" + firstName + '\'' +
+                ", surname='" + surname + '\'' +
+                '}';
     }
 }

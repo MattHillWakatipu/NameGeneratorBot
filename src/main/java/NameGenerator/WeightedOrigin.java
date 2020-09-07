@@ -1,16 +1,20 @@
 package NameGenerator;
 
-public class NameOrigin {
+public class WeightedOrigin {
 
-    private final String origin;
+    enum Origin{
+        SCOTTISH
+    }
+
+    private final Origin origin;
     private final Double weighting;
 
-    public NameOrigin(String origin, Double weighting) {
+    public WeightedOrigin(Origin origin, Double weighting) {
         this.origin = origin;
         this.weighting = weighting;
     }
 
-    public String getOrigin() {
+    public Origin getOrigin() {
         return origin;
     }
 
