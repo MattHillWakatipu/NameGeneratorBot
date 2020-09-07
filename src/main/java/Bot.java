@@ -1,3 +1,4 @@
+import NameGenerator.NameGenerator;
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.lifecycle.ReadyEvent;
@@ -19,6 +20,8 @@ public class Bot {
      */
     public static void main(String[] args) {
 
+        NameGenerator nameGenerator = new NameGenerator();
+
         String token = getTokenFromFile();
 
         GatewayDiscordClient client = createClient(token);
@@ -27,7 +30,9 @@ public class Bot {
 
         respondToPing(client);
 
-        testResponse(client);
+        sayHello(client);
+
+        testResponse(client, nameGenerator);
 
         client.onDisconnect().block();
     }
@@ -85,13 +90,23 @@ public class Bot {
                 .subscribe();
     }
 
-    private static void testResponse(GatewayDiscordClient client) {
+    private static void sayHello(GatewayDiscordClient client) {
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
                 .filter(message -> message.getContent().equalsIgnoreCase("!hello"))
                 .flatMap(Message::getChannel)
                 .flatMap(channel -> channel.createMessage("Hello!"))
+                .subscribe();
+    }
+
+    private static void testResponse(GatewayDiscordClient client, NameGenerator nameGenerator) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
+                .filter(message -> message.getContent().equalsIgnoreCase("!name"))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage(nameGenerator.generateName()))
                 .subscribe();
     }
 }

@@ -2,12 +2,10 @@ package NameGenerator;
 
 import NameGenerator.NameGenerator.Gender;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static NameGenerator.NameGenerator.Gender.*;
+import static NameGenerator.NameGenerator.originMap;
 import static NameGenerator.WeightedOrigin.Origin;
 
 public class Name {
@@ -77,15 +75,14 @@ public class Name {
      * @return First name.
      */
     private String selectFirstName() {
-        String origin = getOrigin().toString().toLowerCase();
-        String gender = getGender().toString().toLowerCase();
-        String directoryName = capitaliseFirstChar(origin);
+        ArrayList<String> nameList = originMap.get(origin).get(gender.toString());
+        System.out.println(originMap.size());
+        System.out.println(originMap.values().size());
+        int lastIndex = nameList.size() - 1;
 
-        String filePath = "src/main/resources/NameLists/" + directoryName + "/" + origin + "_" + gender + ".txt";
+        int index = (int) (Math.random() * lastIndex);
 
-        //String filePath = "src/main/resources/NameLists/Scottish/scottish_feminine.txt";
-
-        return getRandomNameFromFile(filePath);
+        return nameList.get(index);
     }
 
     /**
@@ -94,10 +91,15 @@ public class Name {
      * @return Surname.
      */
     private String selectSurname() {
-        return null;
+        ArrayList<String> nameList = originMap.get(origin).get("SURNAME");
+        int lastIndex = nameList.size() - 1;
+
+        int index = (int) (Math.random() * lastIndex);
+
+        return nameList.get(index);
     }
 
-    private String getRandomNameFromFile(String filePath) {
+/*    private String getRandomNameFromFile(String filePath) {
         try {
             File file = new File(filePath);
 
@@ -112,7 +114,7 @@ public class Name {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 
 
     /////////////////////////////////
