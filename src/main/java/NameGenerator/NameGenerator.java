@@ -10,9 +10,8 @@ import java.util.Scanner;
 
 import static NameGenerator.WeightedOrigin.Origin.SCOTTISH;
 
-
 /**
- *
+ * Main class of the random name generator.
  */
 public class NameGenerator {
 
@@ -25,12 +24,17 @@ public class NameGenerator {
     //Map of Origins to suffixMaps, suffixMaps map their suffix to lists of names
     public static HashMap<Origin, HashMap<String, ArrayList<String>>> originMap = new HashMap<>();
 
+    /**
+     * Constructor for NameGenerator.
+     */
     public NameGenerator() {
         createNameLists();
     }
 
+    /**
+     * Iterates through all resource files, creates nested map structure and populates the name lists.
+     */
     private void createNameLists() {
-
         String prefix = "src/main/resources/NameLists/";
 
         ArrayList<String> originList = createOriginList();
@@ -55,6 +59,11 @@ public class NameGenerator {
         }
     }
 
+    /**
+     * Converts all origins to Strings for file paths.
+     *
+     * @return ArrayList of all origins.
+     */
     private ArrayList<String> createOriginList() {
         ArrayList<String> origins = new ArrayList<>();
         for (Origin origin : Origin.values()) {
@@ -63,6 +72,11 @@ public class NameGenerator {
         return origins;
     }
 
+    /**
+     * Converts genders to Strings for file paths. Add surname to suffix list.
+     *
+     * @return Arraylist of all suffixes.
+     */
     private ArrayList<String> createSuffixList() {
         ArrayList<String> suffixList = new ArrayList<>();
         for (Gender gender : Gender.values()) {
@@ -72,6 +86,12 @@ public class NameGenerator {
         return suffixList;
     }
 
+    /**
+     * Reads all names from file and returns them in an ArrayList.
+     *
+     * @param filePath Filepath of the file to read.
+     * @return ArrayList of all names in the file.
+     */
     private ArrayList<String> createNameList(String filePath) {
         ArrayList<String> nameList = new ArrayList<>();
         try {
@@ -89,6 +109,11 @@ public class NameGenerator {
         return nameList;
     }
 
+    /**
+     * Generate a name based on user input.
+     *
+     * @return Generated name.
+     */
     public String generateName() {
         ArrayList<WeightedOrigin> demographics = new ArrayList<>();
         demographics.add(new WeightedOrigin(SCOTTISH, 1.0));
@@ -97,6 +122,16 @@ public class NameGenerator {
         return name.toString();
     }
 
+    public String generateName(String gender) {
+
+        return "";
+    }
+
+    /**
+     * Main, mainly for testing purposes.
+     *
+     * @param args ignored.
+     */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
         nameGenerator.generateName();
@@ -109,11 +144,9 @@ public class NameGenerator {
      * @return Capitalised String.
      */
     private String capitaliseFirstChar(String input) {
-
         if (input.length() == 0) {
             return "";
         }
-
         return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 }

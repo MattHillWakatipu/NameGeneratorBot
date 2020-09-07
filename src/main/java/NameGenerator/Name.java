@@ -65,6 +65,27 @@ public class Name {
         this.surname = selectSurname();
     }
 
+    /**
+     * Calculates the name origin based off of the region demographics.
+     *
+     * @param region Region to calculate the origin for.
+     * @return NameOrigin to use.
+     */
+    private Origin calculateOrigin(Region region) {
+        double randomValue = Math.random();
+
+        ArrayList<WeightedOrigin> demographics = region.demographics;
+        for (WeightedOrigin weightedOrigin : demographics) {
+            if (randomValue <= weightedOrigin.getWeighting()) {
+                return weightedOrigin.getOrigin();
+                //Found origin to use
+            } else {
+                randomValue -= weightedOrigin.getWeighting();       //remove weighting from random value and continue iterating
+            }
+        }
+        return null;    //TODO throw exception?
+    }
+
     //////////////////////////////
     //  Name Selection Methods  //
     //////////////////////////////
@@ -76,9 +97,11 @@ public class Name {
      */
     private String selectFirstName() {
         ArrayList<String> nameList = originMap.get(origin).get(gender.toString());
-        System.out.println(originMap.size());
-        System.out.println(originMap.values().size());
         int lastIndex = nameList.size() - 1;
+
+        if (lastIndex == -1) {
+            return null;
+        }
 
         int index = (int) (Math.random() * lastIndex);
 
@@ -94,28 +117,14 @@ public class Name {
         ArrayList<String> nameList = originMap.get(origin).get("SURNAME");
         int lastIndex = nameList.size() - 1;
 
+        if (lastIndex == -1) {
+            return null;
+        }
+
         int index = (int) (Math.random() * lastIndex);
 
         return nameList.get(index);
     }
-
-/*    private String getRandomNameFromFile(String filePath) {
-        try {
-            File file = new File(filePath);
-
-            Scanner scanner = new Scanner(file);
-
-            if (scanner.hasNext()) {
-                return scanner.next();
-            }
-
-        } catch (FileNotFoundException e) {
-            System.out.println(filePath + "not found");
-            e.printStackTrace();
-        }
-        return null;
-    }*/
-
 
     /////////////////////////////////
     //  Random Generation Methods  //
@@ -149,27 +158,6 @@ public class Name {
         return Origin.values()[randomNumber];
     }
 
-    /**
-     * Calculates the name origin based off of the region demographics.
-     *
-     * @param region Region to calculate the origin for.
-     * @return NameOrigin to use.
-     */
-    private Origin calculateOrigin(Region region) {
-        double randomValue = Math.random();
-
-        ArrayList<WeightedOrigin> demographics = region.demographics;
-        for (WeightedOrigin weightedOrigin : demographics) {
-            if (randomValue <= weightedOrigin.getWeighting()) {
-                return weightedOrigin.getOrigin();
-                //Found origin to use
-            } else {
-                randomValue -= weightedOrigin.getWeighting();       //remove weighting from random value and continue iterating
-            }
-        }
-        return null;    //TODO throw exception?
-    }
-
     ///////////////
     //  Getters  //
     ///////////////
@@ -198,24 +186,5 @@ public class Name {
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';
-    }
-
-    //////////////////////
-    //  Helper Methods  //
-    //////////////////////
-
-    /**
-     * Capitalise the first character of a string. Used for directory names.
-     *
-     * @param input String to capitalise.
-     * @return Capitalised String.
-     */
-    private String capitaliseFirstChar(String input) {
-
-        if (input.length() == 0) {
-            return "";
-        }
-
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
     }
 }
