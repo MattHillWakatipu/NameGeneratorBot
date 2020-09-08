@@ -44,7 +44,7 @@ public class Bot {
      */
     private static String getTokenFromFile() {
         try {
-            File file = new File("C:\\Users\\Matt\\IdeaProjects\\NameGeneratorBot\\src\\main\\resources\\Token.txt");
+            File file = new File("src/main/resources/Token.txt");
             FileReader fileReader = new FileReader(file);
             Scanner scanner = new Scanner(fileReader);
             return scanner.next();
