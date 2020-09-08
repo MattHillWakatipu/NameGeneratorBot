@@ -120,10 +120,25 @@ public class NameGenerator {
      *
      * @return Generated name.
      */
-    public String generateName() {
+    public String generateNameFromParams(String[] args) {
+        int amountOfParams = args.length;
 
-        Name name = new Name();
-        return name.toString();
+        switch (amountOfParams) {
+            case 0:
+                return String.valueOf(generateName());
+            case 1:
+                if (args[0].length() == 1) {
+                    return String.valueOf(generateName(args[0].charAt(0)));
+                }
+                return String.valueOf(generateName(args[0]));
+            case 2:
+                return String.valueOf(generateName(args[0].charAt(0), args[1]));
+        }
+        throw new RuntimeException();
+    }
+
+    public Name generateName() {
+        return new Name();
     }
 
     public Name generateName(String regionString) {
@@ -136,23 +151,24 @@ public class NameGenerator {
 
     public Name generateName(char gender) {
         return switch (gender) {
-            case 'M' | 'm' -> new Name(MASCULINE);
-            case 'F' | 'f' -> new Name(FEMININE);
-            case 'U' | 'u' -> new Name(UNISEX);
+            case 'M', 'm' -> new Name(MASCULINE);
+            case 'F', 'f' -> new Name(FEMININE);
+            case 'U', 'u' -> new Name(UNISEX);
+
             default -> throw new IllegalArgumentException();
         };
     }
 
-    public Name generateName(String regionString, char gender) {
+    public Name generateName(char gender, String regionString) {
         if (!regionMap.containsKey(regionString)) {
             throw new IllegalArgumentException();
         }
         Region region = regionMap.get(regionString);
 
         return switch (gender) {
-            case 'M' | 'm' -> new Name(MASCULINE, region);
-            case 'F' | 'f' -> new Name(FEMININE, region);
-            case 'U' | 'u' -> new Name(UNISEX, region);
+            case 'M', 'm' -> new Name(MASCULINE, region);
+            case 'F', 'f' -> new Name(FEMININE, region);
+            case 'U', 'u' -> new Name(UNISEX, region);
             default -> throw new IllegalArgumentException();
         };
     }
@@ -164,10 +180,12 @@ public class NameGenerator {
      */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
-        System.out.println(nameGenerator.generateName());
+        String command = "U Bastille";
+        String[] params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
+        /*System.out.println(nameGenerator.generateName('u'));
         System.out.println(nameGenerator.generateName("Bastille"));
-        System.out.println(nameGenerator.generateName('u'));
-        System.out.println(nameGenerator.generateName("Bastille", 'u'));
+        System.out.println(nameGenerator.generateName('u', "Bastille"));*/
     }
 
     /**

@@ -106,7 +106,7 @@ public class Bot {
                 .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
                 .filter(message -> message.getContent().equalsIgnoreCase("!name"))
                 .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage(nameGenerator.generateName()))
+                .flatMap(channel -> channel.createMessage(nameGenerator.generateName().toString()))
                 .subscribe();
     }
 }
