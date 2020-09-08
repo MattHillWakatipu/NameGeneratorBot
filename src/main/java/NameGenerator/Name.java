@@ -83,7 +83,7 @@ public class Name {
                 randomValue -= weightedOrigin.getWeighting();       //remove weighting from random value and continue iterating
             }
         }
-        return null;    //TODO throw exception?
+        throw new RuntimeException();
     }
 
     //////////////////////////////
@@ -156,26 +156,6 @@ public class Name {
         int lastIndex = Origin.values().length - 1;
         int randomNumber = (int) (Math.random() * lastIndex);
         return Origin.values()[randomNumber];
-    }
-
-    ///////////////
-    //  Getters  //
-    ///////////////
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public Gender getGender() {
-        return gender;
-    }
-
-    public Origin getOrigin() {
-        return origin;
     }
 
     @Override
