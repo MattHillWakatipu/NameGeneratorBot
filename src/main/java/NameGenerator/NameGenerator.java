@@ -15,23 +15,40 @@ import static NameGenerator.NameGenerator.Gender.*;
  */
 public class NameGenerator {
 
-    enum Gender {
-        MASCULINE,
-        FEMININE,
-        UNISEX
-    }
-
     //Map of Origins to suffixMaps, suffixMaps map their suffix to lists of names
     public static HashMap<Origin, HashMap<String, ArrayList<String>>> originMap = new HashMap<>();
     public static HashMap<String, Region> regionMap = new HashMap<>();
 
     /**
      * Constructor for NameGenerator.
+     * Populates static collections with data read from file.
      */
     public NameGenerator() {
         createNameLists();
         createRegions();
     }
+
+    /**
+     * Main, used for testing purposes.
+     *
+     * @param args ignored.
+     */
+    public static void main(String[] args) {
+        NameGenerator nameGenerator = new NameGenerator();
+        String command = "U Alberton";
+        String[] params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
+        command = "F BuinnLleith";
+        params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
+        command = "M Gwynloc";
+        params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
+    }
+
+    //////////////////////
+    //  Setup methods   //
+    //////////////////////
 
     /**
      * Iterates through all resource files, creates nested map structure and populates the name lists.
@@ -69,6 +86,7 @@ public class NameGenerator {
             File file = new File("src/main/resources/regions.csv");
             Scanner lineScan = new Scanner(file);
 
+            //For every region in the file, create the region and store in map
             while (lineScan.hasNextLine()) {
                 String line = lineScan.nextLine();
                 Scanner scanner = new Scanner(line);
@@ -76,8 +94,10 @@ public class NameGenerator {
 
                 String regionName = scanner.next();
                 ArrayList<WeightedOrigin> demographics = new ArrayList<>();
-                for (int i = 0; i < 3; i++) {
-                    Origin origin = Origin.valueOf(scanner.next().toUpperCase());       //Get string to an origin enum
+
+                //Read all weightings and store in demographics
+                while (scanner.hasNext()) {
+                    Origin origin = Origin.valueOf(scanner.next().toUpperCase());       //Turn string into an origin enum
                     double originWeight = scanner.nextDouble();                         //Get weighting
                     demographics.add(new WeightedOrigin(origin, originWeight));         //Add to demographics
                 }
@@ -88,6 +108,10 @@ public class NameGenerator {
             e.printStackTrace();
         }
     }
+
+    //////////////////////////////
+    //  SetUp Helper Methods    //
+    //////////////////////////////
 
     /**
      * Converts all origins to Strings for file paths.
@@ -139,32 +163,63 @@ public class NameGenerator {
     }
 
     /**
-     * Generate a name based on user input.
+     * Capitalise the first character of a string. Used for directory names.
+     *
+     * @param input String to capitalise.
+     * @return Capitalised String.
+     */
+    private String capitaliseFirstChar(String input) {
+        if (input.length() == 0) {
+            return "";
+        }
+        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    }
+
+    //////////////////////////////
+    //  Name Generation Methods //
+    //////////////////////////////
+
+    /**
+     * Generate a name based on passed parameters.
      *
      * @return Generated name.
      */
-    public String generateNameFromParams(String[] args) {
-        int amountOfParams = args.length;
+    public String generateNameFromParams(String[] params) {
+        int amountOfParams = params.length;
 
         switch (amountOfParams) {
             case 0:
-                return String.valueOf(generateName());
+                return String.valueOf(randomName());
+
             case 1:
-                if (args[0].length() == 1) {
-                    return String.valueOf(generateName(args[0].charAt(0)));
+                //Use gender method if argument is a char, otherwise use region method.
+                if (params[0].length() == 1) {
+                    return String.valueOf(genderName(params[0].charAt(0)));
                 }
-                return String.valueOf(generateName(args[0]));
+                return String.valueOf(regionName(params[0]));
+
             case 2:
-                return String.valueOf(generateName(args[0].charAt(0), args[1]));
+                return String.valueOf(genderRegionName(params[0].charAt(0), params[1]));
         }
         throw new RuntimeException();
     }
 
-    public Name generateName() {
+    /**
+     * Create a purely random name.
+     *
+     * @return Generated name.
+     */
+    public Name randomName() {
         return new Name();
     }
 
-    public Name generateName(String regionString) {
+    /**
+     * Create a random name based off region.
+     *
+     * @param regionString Region to use demographics of.
+     * @return Generated name.
+     */
+    public Name regionName(String regionString) {
         if (!regionMap.containsKey(regionString)) {
             throw new IllegalArgumentException();
         }
@@ -172,7 +227,13 @@ public class NameGenerator {
         return new Name(region);
     }
 
-    public Name generateName(char gender) {
+    /**
+     * Create a random name based off gender.
+     *
+     * @param gender Gender of first name.
+     * @return Generated name.
+     */
+    public Name genderName(char gender) {
         return switch (gender) {
             case 'M', 'm' -> new Name(MASCULINE);
             case 'F', 'f' -> new Name(FEMININE);
@@ -181,7 +242,14 @@ public class NameGenerator {
         };
     }
 
-    public Name generateName(char gender, String regionString) {
+    /**
+     * Create a random name based off region and gender.
+     *
+     * @param gender Gender of first name.
+     * @param regionString Region to use demographics of.
+     * @return Generated name.
+     */
+    public Name genderRegionName(char gender, String regionString) {
         if (!regionMap.containsKey(regionString)) {
             throw new IllegalArgumentException();
         }
@@ -196,33 +264,11 @@ public class NameGenerator {
     }
 
     /**
-     * Main, used for testing purposes.
-     *
-     * @param args ignored.
+     * Gender of Name.
      */
-    public static void main(String[] args) {
-        NameGenerator nameGenerator = new NameGenerator();
-        String command = "U Alberton";
-        String[] params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
-        command = "F BuinnLleith";
-        params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
-        command = "M Gwynloc";
-        params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
-    }
-
-    /**
-     * Capitalise the first character of a string. Used for directory names.
-     *
-     * @param input String to capitalise.
-     * @return Capitalised String.
-     */
-    private String capitaliseFirstChar(String input) {
-        if (input.length() == 0) {
-            return "";
-        }
-        return input.substring(0, 1).toUpperCase() + input.substring(1);
+    enum Gender {
+        MASCULINE,
+        FEMININE,
+        UNISEX
     }
 }

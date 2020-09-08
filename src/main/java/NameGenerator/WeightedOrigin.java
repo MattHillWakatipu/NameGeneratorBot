@@ -5,16 +5,8 @@ package NameGenerator;
  */
 public class WeightedOrigin {
 
-    /**
-     * All possible origins.
-     */
-    enum Origin {
-        DUTCH, ENGLISH, FRENCH, IRISH, MAORI, SCOTTISH
-    }
-
     private final Origin origin;
     private final Double weighting;
-
     /**
      * Constructor for a WeightedOrigin.
      *
@@ -42,5 +34,12 @@ public class WeightedOrigin {
      */
     public Double getWeighting() {
         return weighting;
+    }
+
+    /**
+     * All possible origins.
+     */
+    enum Origin {
+        DUTCH, ENGLISH, FRENCH, IRISH, MAORI, SCOTTISH
     }
 }
