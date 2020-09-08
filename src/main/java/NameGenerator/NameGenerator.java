@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import static NameGenerator.NameGenerator.Gender.*;
 import static NameGenerator.WeightedOrigin.Origin.SCOTTISH;
 
 /**
@@ -23,12 +24,18 @@ public class NameGenerator {
 
     //Map of Origins to suffixMaps, suffixMaps map their suffix to lists of names
     public static HashMap<Origin, HashMap<String, ArrayList<String>>> originMap = new HashMap<>();
+    public static HashMap<String, Region> regionMap = new HashMap<>();
 
     /**
      * Constructor for NameGenerator.
      */
     public NameGenerator() {
         createNameLists();
+
+        ArrayList<WeightedOrigin> demographics = new ArrayList<>();
+        demographics.add(new WeightedOrigin(SCOTTISH, 1.0));
+        Region bastille = new Region("Bastille", demographics);
+        regionMap.put(bastille.getName(), bastille);
     }
 
     /**
@@ -40,10 +47,10 @@ public class NameGenerator {
         ArrayList<String> originList = createOriginList();
         ArrayList<String> suffixList = createSuffixList();
 
-        //For each origin, create a suffixMap, read from file and create arraylist
+        //For each origin, create a suffixMap, read from file, create arraylist and store in originMap
         for (String origin : originList) {
 
-            HashMap<String, ArrayList<String>> suffixMap = new HashMap<>();
+            HashMap<String, ArrayList<String>> suffixMap = new HashMap<>();             //Map of suffixes to NameLists
             String directory = capitaliseFirstChar(origin);
 
             for (String suffix : suffixList) {
@@ -96,7 +103,6 @@ public class NameGenerator {
         ArrayList<String> nameList = new ArrayList<>();
         try {
             File file = new File(filePath);
-
             Scanner scanner = new Scanner(file);
 
             while (scanner.hasNext()) {
@@ -115,26 +121,53 @@ public class NameGenerator {
      * @return Generated name.
      */
     public String generateName() {
-        ArrayList<WeightedOrigin> demographics = new ArrayList<>();
-        demographics.add(new WeightedOrigin(SCOTTISH, 1.0));
-        Region bastille = new Region("Bastille", demographics);
-        Name name = new Name(bastille);
+
+        Name name = new Name();
         return name.toString();
     }
 
-    public String generateName(String gender) {
+    public Name generateName(String regionString) {
+        if (!regionMap.containsKey(regionString)) {
+            throw new IllegalArgumentException();
+        }
+        Region region = regionMap.get(regionString);
+        return new Name(region);
+    }
 
-        return "";
+    public Name generateName(char gender) {
+        return switch (gender) {
+            case 'M' | 'm' -> new Name(MASCULINE);
+            case 'F' | 'f' -> new Name(FEMININE);
+            case 'U' | 'u' -> new Name(UNISEX);
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    public Name generateName(String regionString, char gender) {
+        if (!regionMap.containsKey(regionString)) {
+            throw new IllegalArgumentException();
+        }
+        Region region = regionMap.get(regionString);
+
+        return switch (gender) {
+            case 'M' | 'm' -> new Name(MASCULINE, region);
+            case 'F' | 'f' -> new Name(FEMININE, region);
+            case 'U' | 'u' -> new Name(UNISEX, region);
+            default -> throw new IllegalArgumentException();
+        };
     }
 
     /**
-     * Main, mainly for testing purposes.
+     * Main, used for testing purposes.
      *
      * @param args ignored.
      */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
-        nameGenerator.generateName();
+        System.out.println(nameGenerator.generateName());
+        System.out.println(nameGenerator.generateName("Bastille"));
+        System.out.println(nameGenerator.generateName('u'));
+        System.out.println(nameGenerator.generateName("Bastille", 'u'));
     }
 
     /**
