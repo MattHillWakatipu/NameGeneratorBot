@@ -73,17 +73,16 @@ public class Name {
      */
     private Origin calculateOrigin(Region region) {
         double randomValue = Math.random();
-
         ArrayList<WeightedOrigin> demographics = region.demographics;
+
         for (WeightedOrigin weightedOrigin : demographics) {
             if (randomValue <= weightedOrigin.getWeighting()) {
-                return weightedOrigin.getOrigin();
-                //Found origin to use
+                return weightedOrigin.getOrigin();                      //Found origin to use
             } else {
-                randomValue -= weightedOrigin.getWeighting();       //remove weighting from random value and continue iterating
+                randomValue -= weightedOrigin.getWeighting();           //remove weighting from random value and continue iterating
             }
         }
-        throw new RuntimeException();
+        throw new RuntimeException();   //TODO custom expection
     }
 
     //////////////////////////////
@@ -91,7 +90,7 @@ public class Name {
     //////////////////////////////
 
     /**
-     * Randomly select a first name based off of current origin.
+     * Randomly select a first name based off of current origin and gender.
      *
      * @return First name.
      */
@@ -100,9 +99,8 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            return null;
+            throw new RuntimeException();   //TODO custom expection
         }
-
         int index = (int) (Math.random() * lastIndex);
 
         return nameList.get(index);
@@ -118,9 +116,8 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            return null;
+            throw new RuntimeException();   //TODO custom expection
         }
-
         int index = (int) (Math.random() * lastIndex);
 
         return nameList.get(index);
