@@ -73,7 +73,7 @@ public class Name {
      */
     private Origin calculateOrigin(Region region) {
         double randomValue = Math.random();
-        ArrayList<WeightedOrigin> demographics = region.demographics;
+        ArrayList<WeightedOrigin> demographics = region.getDemographics();
 
         for (WeightedOrigin weightedOrigin : demographics) {
             if (randomValue <= weightedOrigin.getWeighting()) {

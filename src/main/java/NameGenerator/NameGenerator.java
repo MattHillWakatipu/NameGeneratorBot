@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import static NameGenerator.NameGenerator.Gender.*;
-import static NameGenerator.WeightedOrigin.Origin.SCOTTISH;
 
 /**
  * Main class of the random name generator.
@@ -31,11 +30,7 @@ public class NameGenerator {
      */
     public NameGenerator() {
         createNameLists();
-
-        ArrayList<WeightedOrigin> demographics = new ArrayList<>();
-        demographics.add(new WeightedOrigin(SCOTTISH, 1.0));
-        Region bastille = new Region("Bastille", demographics);
-        regionMap.put(bastille.getName(), bastille);
+        createRegions();
     }
 
     /**
@@ -56,13 +51,41 @@ public class NameGenerator {
             for (String suffix : suffixList) {
 
                 String filePath = prefix + directory + "/" + origin + "_" + suffix + ".txt";
-                ArrayList<String> nameList = createNameList(filePath);
+                ArrayList<String> nameList = readNameList(filePath);
 
                 suffixMap.put(suffix.toUpperCase(), nameList);
             }
 
             Origin originEnum = Origin.valueOf(origin.toUpperCase());                   //Convert back to enum
             originMap.put(originEnum, suffixMap);                                       //Put suffixMap into originMap
+        }
+    }
+
+    /**
+     * Reads through the regions.csv file, creating all regions and storing them in regionMap.
+     */
+    private void createRegions() {
+        try {
+            File file = new File("src/main/resources/regions.csv");
+            Scanner lineScan = new Scanner(file);
+
+            while (lineScan.hasNextLine()) {
+                String line = lineScan.nextLine();
+                Scanner scanner = new Scanner(line);
+                scanner.useDelimiter(",");
+
+                String regionName = scanner.next();
+                ArrayList<WeightedOrigin> demographics = new ArrayList<>();
+                for (int i = 0; i < 3; i++) {
+                    Origin origin = Origin.valueOf(scanner.next().toUpperCase());       //Get string to an origin enum
+                    double originWeight = scanner.nextDouble();                         //Get weighting
+                    demographics.add(new WeightedOrigin(origin, originWeight));         //Add to demographics
+                }
+                Region region = new Region(regionName, demographics);                   //Create region
+                regionMap.put(region.getName(), region);                                //Store region in map
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
     }
 
@@ -99,7 +122,7 @@ public class NameGenerator {
      * @param filePath Filepath of the file to read.
      * @return ArrayList of all names in the file.
      */
-    private ArrayList<String> createNameList(String filePath) {
+    private ArrayList<String> readNameList(String filePath) {
         ArrayList<String> nameList = new ArrayList<>();
         try {
             File file = new File(filePath);
@@ -154,7 +177,6 @@ public class NameGenerator {
             case 'M', 'm' -> new Name(MASCULINE);
             case 'F', 'f' -> new Name(FEMININE);
             case 'U', 'u' -> new Name(UNISEX);
-
             default -> throw new IllegalArgumentException();
         };
     }
@@ -180,12 +202,15 @@ public class NameGenerator {
      */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
-        String command = "U Bastille";
+        String command = "U Alberton";
         String[] params = command.split(" ");
         System.out.println(nameGenerator.generateNameFromParams(params));
-        /*System.out.println(nameGenerator.generateName('u'));
-        System.out.println(nameGenerator.generateName("Bastille"));
-        System.out.println(nameGenerator.generateName('u', "Bastille"));*/
+        command = "F BuinnLleith";
+        params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
+        command = "M Gwynloc";
+        params = command.split(" ");
+        System.out.println(nameGenerator.generateNameFromParams(params));
     }
 
     /**
