@@ -8,7 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import static NameGenerator.NameGenerator.Gender.*;
+import static NameGenerator.Name.*;
+import static NameGenerator.Name.Gender.*;
+
 
 /**
  * Main class of the random name generator.
@@ -261,14 +263,5 @@ public class NameGenerator {
             case 'U', 'u' -> new Name(UNISEX, region);
             default -> throw new IllegalArgumentException();
         };
-    }
-
-    /**
-     * Gender of Name.
-     */
-    enum Gender {
-        MASCULINE,
-        FEMININE,
-        UNISEX
     }
 }

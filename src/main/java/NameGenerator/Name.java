@@ -1,10 +1,8 @@
 package NameGenerator;
 
-import NameGenerator.NameGenerator.Gender;
-
 import java.util.ArrayList;
 
-import static NameGenerator.NameGenerator.Gender.*;
+import static NameGenerator.Name.Gender.*;
 import static NameGenerator.NameGenerator.originMap;
 import static NameGenerator.WeightedOrigin.Origin;
 
@@ -82,7 +80,7 @@ public class Name {
                 randomValue -= weightedOrigin.getWeighting();           //remove weighting from random value and continue iterating
             }
         }
-        throw new RuntimeException();   //TODO custom expection
+        throw new RuntimeException();   //TODO custom exception
     }
 
     //////////////////////////////
@@ -99,7 +97,7 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            throw new RuntimeException();   //TODO custom expection
+            throw new RuntimeException();   //TODO custom exception
         }
         int index = (int) (Math.random() * lastIndex);
 
@@ -116,7 +114,7 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            throw new RuntimeException();   //TODO custom expection
+            throw new RuntimeException();   //TODO custom exception
         }
         int index = (int) (Math.random() * lastIndex);
 
@@ -163,5 +161,14 @@ public class Name {
                 ", firstName='" + firstName + '\'' +
                 ", surname='" + surname + '\'' +
                 '}';
+    }
+
+    /**
+     * Gender of Name.
+     */
+    enum Gender {
+        MASCULINE,
+        FEMININE,
+        UNISEX
     }
 }
