@@ -80,7 +80,7 @@ public class Name {
                 randomValue -= weightedOrigin.getWeighting();           //remove weighting from random value and continue iterating
             }
         }
-        throw new RuntimeException();   //TODO custom exception
+        throw new RuntimeException(region.getName() + " has weightings that do not add to 1");
     }
 
     //////////////////////////////
@@ -97,7 +97,9 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            throw new RuntimeException();   //TODO custom exception
+            throw new RuntimeException("Trying to retrieve name from empty name list: " +
+                    origin.name().toLowerCase() +
+                    "_" + gender.toString().toLowerCase() + ".txt");
         }
         int index = (int) (Math.random() * lastIndex);
 
@@ -114,7 +116,9 @@ public class Name {
         int lastIndex = nameList.size() - 1;
 
         if (lastIndex == -1) {
-            throw new RuntimeException();   //TODO custom exception
+            throw new RuntimeException("Trying to retrieve name from empty name list: " +
+                    origin.name().toLowerCase() +
+                    "_surname.txt");
         }
         int index = (int) (Math.random() * lastIndex);
 

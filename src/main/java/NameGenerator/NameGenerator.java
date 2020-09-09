@@ -37,15 +37,11 @@ public class NameGenerator {
      */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
-        String command = "U Alberton";
+        String command = "F Gwynloc";
         String[] params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
-        command = "F BuinnLleith";
-        params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
-        command = "M Gwynloc";
-        params = command.split(" ");
-        System.out.println(nameGenerator.generateNameFromParams(params));
+        for (int i = 0; i < 50; i++) {
+            System.out.println(nameGenerator.generateNameFromParams(params));
+        }
     }
 
     //////////////////////
