@@ -132,7 +132,6 @@ class NameGeneratorTest {
     void genderRegionName_m() {
         name = nameGenerator.genderRegionName('m', region);
         checkNoFieldsNull(name);
-
     }
 
     @Test
