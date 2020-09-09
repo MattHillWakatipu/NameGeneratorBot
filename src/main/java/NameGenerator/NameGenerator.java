@@ -199,7 +199,7 @@ public class NameGenerator {
             case 2:
                 return String.valueOf(genderRegionName(params[0].charAt(0), params[1]));
         }
-        throw new RuntimeException();
+        throw new RuntimeException("Incorrect number of params");
     }
 
     /**
