@@ -212,6 +212,21 @@ public class NameGenerator {
     }
 
     /**
+     * Create a random name based off gender.
+     *
+     * @param gender Gender of first name.
+     * @return Generated name.
+     */
+    public Name genderName(char gender) {
+        return switch (gender) {
+            case 'F', 'f' -> new Name(FEMININE);
+            case 'M', 'm' -> new Name(MASCULINE);
+            case 'U', 'u' -> new Name(UNISEX);
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    /**
      * Create a random name based off region.
      *
      * @param regionString Region to use demographics of.
@@ -223,21 +238,6 @@ public class NameGenerator {
         }
         Region region = regionMap.get(regionString);
         return new Name(region);
-    }
-
-    /**
-     * Create a random name based off gender.
-     *
-     * @param gender Gender of first name.
-     * @return Generated name.
-     */
-    public Name genderName(char gender) {
-        return switch (gender) {
-            case 'M', 'm' -> new Name(MASCULINE);
-            case 'F', 'f' -> new Name(FEMININE);
-            case 'U', 'u' -> new Name(UNISEX);
-            default -> throw new IllegalArgumentException();
-        };
     }
 
     /**
@@ -254,8 +254,8 @@ public class NameGenerator {
         Region region = regionMap.get(regionString);
 
         return switch (gender) {
-            case 'M', 'm' -> new Name(MASCULINE, region);
             case 'F', 'f' -> new Name(FEMININE, region);
+            case 'M', 'm' -> new Name(MASCULINE, region);
             case 'U', 'u' -> new Name(UNISEX, region);
             default -> throw new IllegalArgumentException();
         };

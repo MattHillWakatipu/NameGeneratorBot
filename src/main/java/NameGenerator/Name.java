@@ -6,6 +6,9 @@ import static NameGenerator.Name.Gender.*;
 import static NameGenerator.NameGenerator.originMap;
 import static NameGenerator.WeightedOrigin.Origin;
 
+/**
+ * A randomly generated full name.
+ */
 public class Name {
 
     static final double MASCULINE_PERCENTAGE = 0.4;
@@ -27,18 +30,6 @@ public class Name {
     }
 
     /**
-     * Constructor for random name with region parameter selected.
-     *
-     * @param region Region to use demographics of.
-     */
-    public Name(Region region) {
-        this.gender = randomGender();
-        this.origin = calculateOrigin(region);
-        this.firstName = selectFirstName();
-        this.surname = selectSurname();
-    }
-
-    /**
      * Constructor for random name with gender parameter selected.
      *
      * @param gender Selected gender to get name of.
@@ -46,6 +37,18 @@ public class Name {
     public Name(Gender gender) {
         this.gender = gender;
         this.origin = randomOrigin();
+        this.firstName = selectFirstName();
+        this.surname = selectSurname();
+    }
+
+    /**
+     * Constructor for random name with region parameter selected.
+     *
+     * @param region Region to use demographics of.
+     */
+    public Name(Region region) {
+        this.gender = randomGender();
+        this.origin = calculateOrigin(region);
         this.firstName = selectFirstName();
         this.surname = selectSurname();
     }
@@ -136,12 +139,12 @@ public class Name {
      */
     private Gender randomGender() {
         double randomValue = Math.random();
-        if (randomValue <= MASCULINE_PERCENTAGE) {
-            return MASCULINE;
-        }
-        randomValue -= MASCULINE_PERCENTAGE;
         if (randomValue <= FEMININE_PERCENTAGE) {
             return FEMININE;
+        }
+        randomValue -= FEMININE_PERCENTAGE;
+        if (randomValue <= MASCULINE_PERCENTAGE) {
+            return MASCULINE;
         }
         return UNISEX;
     }
@@ -155,6 +158,46 @@ public class Name {
         int lastIndex = Origin.values().length - 1;
         int randomNumber = (int) (Math.random() * lastIndex);
         return Origin.values()[randomNumber];
+    }
+
+    ////////////////////////////
+    //  Getters and toString  //
+    ////////////////////////////
+
+    /**
+     * Getter for gender.
+     *
+     * @return gender.
+     */
+    public Gender getGender() {
+        return gender;
+    }
+
+    /**
+     * Getter for origin.
+     *
+     * @return origin.
+     */
+    public Origin getOrigin() {
+        return origin;
+    }
+
+    /**
+     * Getter for fistName.
+     *
+     * @return firstName.
+     */
+    public String getFirstName() {
+        return firstName;
+    }
+
+    /**
+     * Getter for surname.
+     *
+     * @return surname.
+     */
+    public String getSurname() {
+        return surname;
     }
 
     @Override
@@ -171,8 +214,8 @@ public class Name {
      * Gender of Name.
      */
     enum Gender {
-        MASCULINE,
         FEMININE,
+        MASCULINE,
         UNISEX
     }
 }
