@@ -37,7 +37,7 @@ public class NameGenerator {
      */
     public static void main(String[] args) {
         NameGenerator nameGenerator = new NameGenerator();
-        String command = "F Gwynloc";
+        String command = "Gwynloc";
         String[] params = command.split(" ");
         for (int i = 0; i < 50; i++) {
             System.out.println(nameGenerator.generateNameFromParams(params));
@@ -150,8 +150,8 @@ public class NameGenerator {
             File file = new File(filePath);
             Scanner scanner = new Scanner(file);
 
-            while (scanner.hasNext()) {
-                nameList.add(scanner.next());
+            while (scanner.hasNextLine()) {
+                nameList.add(scanner.nextLine());
             }
 
         } catch (FileNotFoundException e) {
@@ -166,7 +166,7 @@ public class NameGenerator {
      * @param input String to capitalise.
      * @return Capitalised String.
      */
-    private String capitaliseFirstChar(String input) {
+    public static String capitaliseFirstChar(String input) {
         if (input.length() == 0) {
             return "";
         }

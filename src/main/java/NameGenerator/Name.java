@@ -202,12 +202,9 @@ public class Name {
 
     @Override
     public String toString() {
-        return "Name{" +
-                "gender=" + gender +
-                ", origin=" + origin +
-                ", firstName='" + firstName + '\'' +
-                ", surname='" + surname + '\'' +
-                '}';
+        return firstName + " " + surname + ", " +
+                gender.toString().charAt(0) + ", " +
+                NameGenerator.capitaliseFirstChar(origin.toString().toLowerCase());
     }
 
     /**
