@@ -32,7 +32,11 @@ public class Bot {
 
         sayHello(client);
 
-        randomName(client, nameGenerator);
+        randomNameF(client, nameGenerator);
+
+        randomNameM(client, nameGenerator);
+
+        randomNameU(client, nameGenerator);
 
         client.onDisconnect().block();
     }
@@ -100,13 +104,33 @@ public class Bot {
                 .subscribe();
     }
 
-    private static void randomName(GatewayDiscordClient client, NameGenerator nameGenerator) {
+    private static void randomNameF(GatewayDiscordClient client, NameGenerator nameGenerator) {
         client.getEventDispatcher().on(MessageCreateEvent.class)
                 .map(MessageCreateEvent::getMessage)
                 .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
-                .filter(message -> message.getContent().equalsIgnoreCase("!name"))
+                .filter(message -> message.getContent().equalsIgnoreCase("!F Gwynloc"))
                 .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage(nameGenerator.randomName().toString()))
+                .flatMap(channel -> channel.createMessage(nameGenerator.genderRegionName('F', "Gwynloc").toString()))
+                .subscribe();
+    }
+
+    private static void randomNameM(GatewayDiscordClient client, NameGenerator nameGenerator) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
+                .filter(message -> message.getContent().equalsIgnoreCase("!M Gwynloc"))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage(nameGenerator.genderRegionName('M', "Gwynloc").toString()))
+                .subscribe();
+    }
+
+    private static void randomNameU(GatewayDiscordClient client, NameGenerator nameGenerator) {
+        client.getEventDispatcher().on(MessageCreateEvent.class)
+                .map(MessageCreateEvent::getMessage)
+                .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
+                .filter(message -> message.getContent().equalsIgnoreCase("!U Gwynloc"))
+                .flatMap(Message::getChannel)
+                .flatMap(channel -> channel.createMessage(nameGenerator.genderRegionName('U', "Gwynloc").toString()))
                 .subscribe();
     }
 }
